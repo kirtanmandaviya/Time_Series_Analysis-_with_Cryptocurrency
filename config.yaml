@@ -1,0 +1,54 @@
+# Project Metadata
+project:
+  name: "CryptoForecast"
+  version: "1.0.0"
+  author: "Data Analytics Team"
+
+# API Configuration
+api:
+  coingecko_base: "https://api.coingecko.com/api/v3/"
+
+# Data Configuration
+data:
+  cryptocurrencies: ["BTC", "ETH", "BNB"]
+  defaults:
+    symbol: "BTC"
+    history_days: 365
+    target_column: "price"
+
+# Model Hyperparameters
+models:
+  # ARIMA settings (Team Member 1)
+  arima:
+    order: [5, 1, 0]
+    seasonal_order: [1, 1, 1, 12]
+  
+  # LSTM settings (Team Member 2)
+  lstm:
+    sequence_length: 60
+    epochs: 50
+    batch_size: 32
+    hidden_units: [50, 50]
+    dropout_rate: 0.2
+    learning_rate: 0.001
+  
+  # Prophet settings (Team Member 3)
+  prophet:
+    changepoint_prior_scale: 0.05
+    seasonality_prior_scale: 10
+    features:
+      daily: true
+      weekly: true
+      yearly: true
+
+# Dashboard Configuration
+dashboard:
+  theme: "dark"
+  refresh_interval: 300
+  forecast_horizon: 30
+  indicators:
+    moving_averages: [7, 30, 90]
+  streamlit:
+    page_title: "Crypto Analytics Dashboard"
+    page_icon: "📊"
+    layout: "wide"
