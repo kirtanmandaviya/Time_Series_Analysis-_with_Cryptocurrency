@@ -9,3 +9,5 @@ keras
 dotenv
 PyYAML
 ta
+streamlit
+plotly
