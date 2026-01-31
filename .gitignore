@@ -1,2 +1,7 @@
 .env
 venv/
+data/
+logs/
+New folder/
+final_model1/
+notebooks/
