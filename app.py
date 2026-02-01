@@ -319,9 +319,9 @@ def load_data():
     import os
     # Try multiple possible paths
     possible_paths = [
-        r'c:\Users\Yuva sri\Downloads\btc_extended.csv',
-        'btc_extended.csv',
-        os.path.join(os.path.dirname(__file__), 'btc_extended.csv')
+        r'data\processed\btc_cleaned.csv',
+        'btc_cleaned.csv',
+        os.path.join(os.path.dirname(__file__), 'btc_cleaned.csv')
     ]
     
     df = None
@@ -333,7 +333,7 @@ def load_data():
     if df is None:
         raise FileNotFoundError("btc_extended.csv not found in any expected location")
     
-    df['date'] = pd.to_datetime(df['date'], format='%d-%m-%Y %H:%M')
+    df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date')
     
     # Calculate technical indicators
