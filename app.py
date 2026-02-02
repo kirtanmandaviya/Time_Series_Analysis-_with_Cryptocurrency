@@ -8,8 +8,8 @@ import os
 
 # Page configuration
 st.set_page_config(
-    page_title="Crypto Time Series Analytics | LSTM Forecasting Platform",
-    page_icon="🚀",
+    page_title="Crypto Time Series Analytics Platform",
+    page_icon="📈",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -298,7 +298,7 @@ st.markdown("""
     
     .stat-value {
         font-family: 'JetBrains Mono', monospace;
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 700;
         background: linear-gradient(135deg, #00f5ff 0%, #667eea 100%);
         -webkit-background-clip: text;
@@ -319,9 +319,9 @@ def load_data():
     import os
     # Try multiple possible paths
     possible_paths = [
-        r'data\processed\btc_cleaned.csv',
-        'btc_cleaned.csv',
-        os.path.join(os.path.dirname(__file__), 'btc_cleaned.csv')
+        r'data/processed/crypto_features.csv',
+        'crypto_features.csv',
+        os.path.join(os.path.dirname(__file__), 'crypto_features.csv')
     ]
     
     df = None
@@ -331,7 +331,7 @@ def load_data():
             break
     
     if df is None:
-        raise FileNotFoundError("btc_extended.csv not found in any expected location")
+        raise FileNotFoundError("crypto_features.csv not found in any expected location")
     
     df['date'] = pd.to_datetime(df['date'])
     df = df.sort_values('date')
@@ -347,8 +347,8 @@ def load_data():
 # Custom header
 st.markdown("""
     <div class="crypto-header">
-        <h1 class="crypto-title">🚀 CRYPTO TIME SERIES ANALYTICS</h1>
-        <p class="crypto-subtitle">LSTM Deep Learning | Real-time Market Intelligence | Predictive Forecasting</p>
+        <h1 class="crypto-title">CRYPTO TIME SERIES ANALYTICS</h1>
+        <p class="crypto-subtitle">Transformer Models | On-Chain Metrics | AI Forecasts</p>
     </div>
     """, unsafe_allow_html=True)
 
@@ -647,7 +647,7 @@ try:
         
         with col1:
             st.markdown(f"""
-            <div class="stats-card">
+            <div class="stats-card" style="width: 250px;">
                 <div class="stat-label">🎯 Highest Price</div>
                 <div class="stat-value">${filtered_df['price'].max():,.2f}</div>
             </div>
@@ -680,7 +680,7 @@ try:
         st.markdown("<br>", unsafe_allow_html=True)
         
         # Price distribution with better styling
-        col1, col2 = st.columns([2, 1])
+        col1, col2 = st.columns([1, 1])
         
         with col1:
             fig_candlestick = go.Figure()
@@ -763,7 +763,7 @@ try:
         # Model selection
         model_choice = st.selectbox(
             "Select Model",
-            ["LSTM Model", "GRU Model", "Transformer Model"],
+            ["LSTM Model", "ARIMA Model", "PROPHET Model"],
             index=0
         )
         
@@ -778,24 +778,35 @@ try:
         with col2:
             st.metric("Prediction Days", pred_days)
         with col3:
-            st.metric("Model Accuracy", "95.2%")
+            st.metric("Model Accuracy", "Trained Model")
         
         st.markdown("---")
         
-        # Mock prediction visualization
+        # ================= OPTION A (READ PIPELINE OUTPUT) =================
+        PRED_PATH = "data/processed/bitcoin_predictions.csv"
+        
+        if not os.path.exists(PRED_PATH):
+            st.error("❌ Predictions not found. Run the pipeline first.")
+            st.stop()
+        
+        pred_df = pd.read_csv(PRED_PATH)
+        pred_df['date'] = pd.to_datetime(pred_df['date'])
+        # ==================================================================
+        
         st.markdown("<h3 style='color: #00f5ff;'>📈 Price Prediction Forecast</h3>", unsafe_allow_html=True)
         
-        # Generate mock predictions
-        last_price = filtered_df['price'].iloc[-1]
         historical_recent = filtered_df.tail(30)
+        last_price = filtered_df['price'].iloc[-1]
         
-        # Create future dates
-        last_date = filtered_df['date'].iloc[-1]
-        future_dates = pd.date_range(start=last_date + pd.Timedelta(days=1), periods=pred_days)
+        if model_choice == "LSTM Model":
+            predictions = pred_df["LSTM"].values
+        elif model_choice == "ARIMA Model":
+            predictions = pred_df["ARIMA"].values
+        elif model_choice == "PROPHET Model":
+            predictions = pred_df["Prophet"].values
         
-        # Mock predictions with slight upward trend
-        np.random.seed(42)
-        predictions = [last_price * (1 + np.random.uniform(-0.02, 0.03)) for _ in range(pred_days)]
+        predictions = predictions[:pred_days]
+        future_dates = pred_df['date'][:pred_days]
         
         fig_pred = go.Figure()
         
@@ -818,9 +829,9 @@ try:
             marker=dict(size=8, color='#f093fb')
         ))
         
-        # Confidence interval
-        upper_bound = [p * 1.05 for p in predictions]
-        lower_bound = [p * 0.95 for p in predictions]
+        # Confidence interval (simple visualization)
+        upper_bound = predictions * 1.05
+        lower_bound = predictions * 0.95
         
         fig_pred.add_trace(go.Scatter(
             x=future_dates,
@@ -871,8 +882,8 @@ try:
             st.metric("Lower Bound", f"${lower_bound[-1]:,.2f}")
         
         st.markdown("---")
-        st.info("📝 **Note:** These are demonstration predictions. For production use, integrate actual trained models.")
-    
+        st.info("📝 **Note:** Predictions are generated using trained models from the pipeline.")
+
     
     # -------------------- PAGE 4: MODEL COMPARISON --------------------
     elif page == "⚖️ Model Comparison":
@@ -881,11 +892,11 @@ try:
         
         # Model performance metrics
         model_metrics = pd.DataFrame({
-            'Model': ['LSTM', 'GRU', 'Transformer'],
-            'Accuracy': [95.2, 93.8, 94.5],
-            'RMSE': [245.3, 287.6, 265.1],
-            'MAE': [189.4, 221.7, 203.2],
-            'R² Score': [0.952, 0.938, 0.945],
+            'Model': ['LSTM', 'ARIMA', 'PROPHET'],
+            'Accuracy': [98.91 , 98.45, 97.41],
+            'RMSE': [1.329201, 1.898302, 3.242394],
+            'MAE': [1.061675, 1.512413, 2.562016],
+            'R² Score': [0.978362, 0.955867,  0.871245],
             'Training Time (min)': [45, 38, 52]
         })
         
@@ -911,7 +922,7 @@ try:
             fig_acc.update_layout(
                 title="<b>Model Accuracy Comparison</b>",
                 yaxis_title="<b>Accuracy (%)</b>",
-                height=400,
+                height=515,
                 template='plotly_dark',
                 paper_bgcolor='#1a1a2e',
                 plot_bgcolor='#16213e',
@@ -931,7 +942,7 @@ try:
             fig_rmse.update_layout(
                 title="<b>Model RMSE Comparison (Lower is Better)</b>",
                 yaxis_title="<b>RMSE</b>",
-                height=400,
+                height=515,
                 template='plotly_dark',
                 paper_bgcolor='#1a1a2e',
                 plot_bgcolor='#16213e',
@@ -947,7 +958,7 @@ try:
         categories = ['Accuracy', 'Speed', 'Stability', 'Complexity', 'Scalability']
         
         fig_radar.add_trace(go.Scatterpolar(
-            r=[95, 85, 90, 70, 88],
+            r=[98.92, 100.0, 100.0, 97.84, 28.3],
             theta=categories,
             fill='toself',
             name='LSTM',
@@ -955,18 +966,18 @@ try:
         ))
         
         fig_radar.add_trace(go.Scatterpolar(
-            r=[93, 92, 88, 75, 90],
+            r=[98.45, 61.2, 64.5, 95.59, 100.0],
             theta=categories,
             fill='toself',
-            name='GRU',
+            name='ARIMA',
             line=dict(color='#667eea', width=2)
         ))
         
         fig_radar.add_trace(go.Scatterpolar(
-            r=[94, 78, 92, 85, 85],
+            r=[97.41, 0.0, 0.0, 87.12, 0.0],
             theta=categories,
             fill='toself',
-            name='Transformer',
+            name='PROPHET',
             line=dict(color='#f093fb', width=2)
         ))
         
@@ -1554,7 +1565,7 @@ try:
         st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem;'>🤖 LSTM Deep Learning Predictions</h2>", unsafe_allow_html=True)
         
         # Check if model exists
-        model_path = os.path.join(os.path.dirname(__file__), 'final_model', 'lstm_best.h5')
+        model_path = os.path.join(os.path.dirname(__file__), 'final_model', 'lstm_model.h5')
         
         if os.path.exists(model_path):
             st.success("✅ LSTM Model Found: lstm_best.h5")
@@ -1584,84 +1595,47 @@ try:
                     <div class="stat-value" style="font-size: 1.5rem; color: #00ff00;">Ready</div>
                 </div>
                 """, unsafe_allow_html=True)
-            
+
             st.markdown("<br>", unsafe_allow_html=True)
-            
-            # Model information
-            st.info("""
-            **🔮 Predictive Analytics Features:**
-            - Deep Learning time series forecasting using LSTM architecture
-            - Historical pattern recognition and trend analysis
-            - Multi-step ahead price predictions
-            - Confidence interval estimation
-            - Real-time model performance metrics
-            
-            **📈 Model Capabilities:**
-            - Captures long-term dependencies in cryptocurrency price movements
-            - Adapts to market volatility and seasonal patterns
-            - Provides probabilistic forecasts with uncertainty quantification
-            """)
-            
-            st.markdown("<br>", unsafe_allow_html=True)
-            
-            # Placeholder for future prediction functionality
-            st.warning("🚧 **Prediction Pipeline Integration**: Connect your prediction pipeline here to generate real-time forecasts.")
-            
-            # Prediction settings
-            st.markdown("<h3 style='color: #00f5ff; font-weight: 700; text-shadow: 0 0 15px rgba(0, 245, 255, 0.5);'>⚙️ Prediction Settings</h3>", unsafe_allow_html=True)
-            
-            col1, col2 = st.columns(2)
-            
-            with col1:
-                forecast_days = st.slider("Forecast Horizon (days)", 1, 30, 7)
-                confidence_level = st.slider("Confidence Level (%)", 80, 99, 95)
-            
-            with col2:
-                st.markdown(f"""
-                <div class="stats-card">
-                    <div class="stat-label">🎯 Forecast Period</div>
-                    <div class="stat-value">{forecast_days} Days</div>
-                </div>
-                """, unsafe_allow_html=True)
-                
-                st.markdown(f"""
-                <div class="stats-card">
-                    <div class="stat-label">📊 Confidence</div>
-                    <div class="stat-value">{confidence_level}%</div>
-                </div>
-                """, unsafe_allow_html=True)
-            
-            st.markdown("<br>", unsafe_allow_html=True)
+
+            # Import the prediction pipeline
+            from src.components.model_prediction import CompletePredictionPipeline
+
+            forecast_days = 30  # Fixed forecast horizon
+            pipeline = CompletePredictionPipeline()
+            df_features, predictions = pipeline.run_complete_pipeline(
+                crypto_id='bitcoin',
+                days=365,
+                forecast_steps=forecast_days
+            )
+
+            # Show forecast period
+            st.markdown("<h3 style='color: #00f5ff; font-weight: 700;'>⚙️ Prediction Settings</h3>", unsafe_allow_html=True)
+            st.markdown(f"""
+            <div class="stats-card">
+                <div class="stat-label">🎯 Forecast Period</div>
+                <div class="stat-value">{forecast_days} Days</div>
+            </div>
+            """, unsafe_allow_html=True)
             
             # Generate predictions button
             if st.button("🚀 Generate Predictions", key="predict_button", help="Click to generate LSTM predictions"):
-                st.info("💡 **Integration Note**: Implement your prediction pipeline to generate forecasts here.")
-                st.code("""
-# Example integration code:
-from src.pipeline.prediction_pipeline import PredictionPipeline
+                st.info("💡 LSTM predictions generated for the next 30 days:")
+                
+                if 'LSTM' in predictions:
+                    pred_df = pd.DataFrame({
+                        'Date': pd.date_range(start=filtered_df['date'].max() + pd.Timedelta(days=1), periods=forecast_days),
+                        'Predicted Price': predictions['LSTM']
+                    })
+                    st.dataframe(pred_df, use_container_width=True)
+                else:
+                    st.warning("⚠️ LSTM predictions not available. Check model and scaler.")
 
-pipeline = PredictionPipeline()
-predictions = pipeline.predict(
-    data=filtered_df,
-    forecast_days=forecast_days,
-    confidence_level=confidence_level
-)
-                """, language="python")
-            
         else:
             st.warning("⚠️ LSTM Model not found. Please train the model first.")
             st.info(f"Expected model path: {model_path}")
             
-            # Training instructions
-            st.markdown("""
-            **📚 To train the LSTM model:**
-            1. Prepare your dataset using the data ingestion pipeline
-            2. Run feature engineering to create input sequences
-            3. Train the model using the model trainer
-            4. Save the trained model to `final_model/lstm_best.h5`
-            """)
-        
-        st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem;'>📋 Interactive Data Table</h2>", unsafe_allow_html=True)
+            st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem;'>📋 Interactive Data Table</h2>", unsafe_allow_html=True)
         
         col1, col2 = st.columns([2, 1])
         
@@ -1674,8 +1648,9 @@ predictions = pipeline.predict(
             rows_per_page = st.selectbox("Rows per page", [10, 25, 50, 100, 500], index=2)
         
         # Prepare display dataframe
-        display_df = filtered_df.copy()
-        display_df['date'] = display_df['date'].dt.strftime('%Y-%m-%d %H:%M')
+        df = pd.read_csv("data/raw/bitcoin_raw.csv")
+        display_df = df.copy()
+        display_df['date'] = pd.to_datetime(display_df['date']).dt.strftime('%Y-%m-%d')
         display_df['price'] = display_df['price'].apply(lambda x: f"${x:,.2f}")
         display_df['market_cap'] = display_df['market_cap'].apply(lambda x: f"${x:,.0f}")
         display_df['volume'] = display_df['volume'].apply(lambda x: f"${x:,.0f}")
@@ -1721,7 +1696,7 @@ predictions = pipeline.predict(
     
     # Additional Analysis Section
     st.markdown("---")
-    st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem; text-align: center;'>🎯 Advanced Correlation Analysis</h2>", unsafe_allow_html=True)
+    st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem; text-align: center;'>Advanced Correlation Analysis</h2>", unsafe_allow_html=True)
     st.markdown("<br>", unsafe_allow_html=True)
     
     col1, col2 = st.columns(2)
@@ -1740,7 +1715,13 @@ predictions = pipeline.predict(
                 color=filtered_df['price'],
                 colorscale='Viridis',
                 showscale=True,
-                colorbar=dict(title="Price ($)"),
+                colorbar=dict(
+                    title="Price ($)",
+                    x = 1.05,
+                    y = 0.4,
+                    thickness=15,
+                    len=0.8  
+                ),
                 opacity=0.6,
                 line=dict(width=1, color='white')
             ),
@@ -1795,7 +1776,13 @@ predictions = pipeline.predict(
                 color=filtered_df['volume'],
                 colorscale='Plasma',
                 showscale=True,
-                colorbar=dict(title="Volume ($)"),
+                colorbar=dict(
+                    title="Volume ($)",
+                    x = 1.05,
+                    y = 0.4,
+                    thickness=15,
+                    len=0.8  
+                ),
                 opacity=0.6,
                 line=dict(width=1, color='white')
             ),
@@ -1838,7 +1825,7 @@ predictions = pipeline.predict(
 
 except FileNotFoundError:
     st.error("❌ Error: 'btc_extended.csv' file not found!")
-    st.info(r"Please make sure the CSV file is at: c:\Users\Yuva sri\Downloads\btc_extended.csv")
+    st.info(r"Please make sure the CSV file ")
 except Exception as e:
     st.error(f"❌ An error occurred: {str(e)}")
     st.info("Please check your data file format.")
