@@ -19,7 +19,6 @@ from src.constants.prediction_pipeline import (
     TARGET_COLUMN,
     RAW_DATA_DIR,
     PROCESSED_DATA_DIR,
-    PREPROCESSING_OBJECT_FILE_NAME,
     SAVED_MODEL_DIR
 )
 from src.exception.exception import CustomException

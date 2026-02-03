@@ -5,9 +5,9 @@ Creates technical indicators and advanced features for crypto analysis
 
 import pandas as pd
 import numpy as np
-from ta.volatility import BollingerBands, AverageTrueRange
-from ta.trend import SMAIndicator, EMAIndicator, MACD
-from ta.momentum import RSIIndicator, StochasticOscillator
+from ta.volatility import BollingerBands
+from ta.trend import MACD
+from ta.momentum import RSIIndicator
 
 class FeatureEngineer:
     def __init__(self):

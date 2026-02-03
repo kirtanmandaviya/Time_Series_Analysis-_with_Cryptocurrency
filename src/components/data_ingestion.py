@@ -240,5 +240,5 @@ if __name__ == "__main__":
     print("\n" + "="*50)
     print(f"Fetching data for all configured cryptocurrencies: {CRYPTOCURRENCIES}")
     print("="*50)
-    # Uncomment to fetch all:
+    # to fetch all:
     # fetcher.fetch_multiple_cryptos()

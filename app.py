@@ -425,12 +425,9 @@ try:
     chart_theme = "plotly_dark"  # Fixed dark theme for better visibility
     show_ma = st.sidebar.checkbox("Show Moving Averages", value=True)
     
-    
-    # ====================================================================
     # DASHBOARD PAGES
-    # ====================================================================
     
-    # -------------------- PAGE 1: OVERVIEW --------------------
+    # PAGE 1: OVERVIEW 
     if page == "📊 Overview":
         st.markdown("<h1 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2.5rem;'>📊 DASHBOARD OVERVIEW</h1>", unsafe_allow_html=True)
         st.markdown("---")
@@ -560,7 +557,7 @@ try:
         st.dataframe(summary_stats.style.format("{:.2f}"), use_container_width=True)
     
     
-    # -------------------- PAGE 2: DATA EXPLORATION --------------------
+    # PAGE 2: DATA EXPLORATION
     elif page == "📈 Data Exploration":
         st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem;'>🎯 Bitcoin Price Trend Analysis</h2>", unsafe_allow_html=True)
         
@@ -755,7 +752,7 @@ try:
             st.plotly_chart(fig_hist, use_container_width=True)
     
     
-    # -------------------- PAGE 3: MODEL PREDICTIONS --------------------
+    # PAGE 3: MODEL PREDICTIONS
     elif page == "🤖 Model Predictions":
         st.markdown("<h1 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2.5rem;'>🤖 MODEL PREDICTIONS</h1>", unsafe_allow_html=True)
         st.markdown("---")
@@ -782,7 +779,7 @@ try:
         
         st.markdown("---")
         
-        # ================= OPTION A (READ PIPELINE OUTPUT) =================
+        #OPTION A (READ PIPELINE OUTPUT) 
         PRED_PATH = "data/processed/bitcoin_predictions.csv"
         
         if not os.path.exists(PRED_PATH):
@@ -791,7 +788,6 @@ try:
         
         pred_df = pd.read_csv(PRED_PATH)
         pred_df['date'] = pd.to_datetime(pred_df['date'])
-        # ==================================================================
         
         st.markdown("<h3 style='color: #00f5ff;'>📈 Price Prediction Forecast</h3>", unsafe_allow_html=True)
         
@@ -885,7 +881,7 @@ try:
         st.info("📝 **Note:** Predictions are generated using trained models from the pipeline.")
 
     
-    # -------------------- PAGE 4: MODEL COMPARISON --------------------
+    # PAGE 4: MODEL COMPARISON 
     elif page == "⚖️ Model Comparison":
         st.markdown("<h1 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2.5rem;'>⚖️ MODEL COMPARISON</h1>", unsafe_allow_html=True)
         st.markdown("---")
@@ -997,7 +993,7 @@ try:
         st.success("✅ **Recommendation:** LSTM model provides the best balance of accuracy and performance for this time series task.")
     
     
-    # -------------------- PAGE 5: TECHNICAL ANALYSIS --------------------
+    # PAGE 5: TECHNICAL ANALYSIS
     elif page == "📉 Technical Analysis":
         st.markdown("<h2 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2rem;'>💎 Market Capitalization Analysis</h2>", unsafe_allow_html=True)
         
@@ -1207,7 +1203,7 @@ try:
             st.plotly_chart(fig_volatility, use_container_width=True)
     
     
-    # -------------------- PAGE 6: STATISTICAL ANALYSIS --------------------
+    # PAGE 6: STATISTICAL ANALYSIS
     elif page == "📊 Statistical Analysis":
         st.markdown("<h1 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2.5rem;'>📊 STATISTICAL ANALYSIS</h1>", unsafe_allow_html=True)
         st.markdown("---")
@@ -1367,7 +1363,7 @@ try:
             st.plotly_chart(fig_vol_dist, use_container_width=True)
     
     
-    # -------------------- PAGE 7: PERFORMANCE METRICS --------------------
+    # PAGE 7: PERFORMANCE METRICS
     elif page == "📋 Performance Metrics":
         st.markdown("<h1 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2.5rem;'>📋 PERFORMANCE METRICS</h1>", unsafe_allow_html=True)
         st.markdown("---")
@@ -1558,7 +1554,7 @@ try:
         st.plotly_chart(fig_comprehensive, use_container_width=True)
     
     
-    # -------------------- PAGE 8: RAW DATA VIEW --------------------
+    # PAGE 8: RAW DATA VIEW 
     elif page == "🔍 Raw Data View":
         st.markdown("<h1 style='color: #00f5ff; font-weight: 900; text-shadow: 0 0 20px rgba(0, 245, 255, 0.5); font-size: 2.5rem;'>🔍 RAW DATA VIEW</h1>", unsafe_allow_html=True)
         st.markdown("---")
