@@ -118,7 +118,7 @@ pip install -r requirements.txt
 
 ---
 
-## ▶️ Run the Application
+##  Run the Application
 
 ```bash
 streamlit run app.py
@@ -133,7 +133,7 @@ This will launch the interactive UI where you can:
 
 ---
 
-## 🔁 Prediction Pipeline Flow
+## Prediction Pipeline Flow
 
 ```
 Data → Preprocessing → Feature Engineering
